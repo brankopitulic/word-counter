@@ -1,48 +1,41 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
 	"os"
+	"strings"
+	"unicode/utf8"
 )
 
 func main() {
-	// open txt file
-	// Open file and create scanner on top of it
-	//file, err := os.Open("test.txt")
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//scanner := bufio.NewScanner(file)
-	//
-	//// Default scanner is bufio.ScanLines. Lets use ScanWords.
-	//// Could also use a custom function of SplitFunc type
-	//scanner.Split(bufio.ScanWords)
-	//
-	//// Scan for next token.
-	//success := scanner.Scan()
-	//if success == false {
-	//	// False on error or EOF. Check error
-	//	err = scanner.Err()
-	//	if err == nil {
-	//		log.Println("Scan completed and reached EOF")
-	//	} else {
-	//		log.Fatal(err)
-	//	}
-	//}
-	//
-	//// Get data from scan with Bytes() or Text()
-	//fmt.Println("First word found:", scanner.Text())
 
-	// Open file and create a buffered reader on top
 	data, err := os.ReadFile("test.txt")
 	if err != nil {
-		panic(err)
-	}
-	_, err = os.Stdout.Write(data)
-	if err != nil {
+		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	// Call scanner.Scan() again to find next token
-	// read file
-	// given result are words, characters and lines
+	str := string(data)
+
+	dataScanner := bufio.NewScanner(strings.NewReader(str))
+	dataScanner.Split(bufio.ScanWords)
+	count := 0
+	for dataScanner.Scan() {
+		count++
+	}
+
+	fmt.Println("Total characters count =", utf8.RuneCountInString(str))
+	fmt.Println("Total words count =", count)
+	fmt.Println("Total lines count =", countRune(str, '\n'))
+}
+
+func countRune(s string, r rune) int {
+	count := 0
+	for _, c := range s {
+		if c == r {
+			count++
+		}
+	}
+	return count + 1 // +1 count last line
 }
